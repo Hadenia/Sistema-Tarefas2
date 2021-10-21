@@ -30,7 +30,7 @@ Para a criação do projeto foi utilizado as seguintes tecnologias:
 - Para a execução recomenda-se a utilização das tecnologias citadas acima.
 - Criar banco de dados pgAdmin 4. Nome do banco: bd_tarefas
 - Criar um projeto Maven através do site https://start.spring.io/ ou através do proprio IDE Intellij 
-- Abrir local do projeto e substituir a pasta 'scr' e arquivo 'pom.xml'
+- Abrir local do projeto e substituir a pasta 'src' e arquivo 'pom.xml'
 - Executar aplicação e visualizar o mesmo no navegador atráves do endereço localhost:8080/Projeto_Tarefas
 
 ### Funcionalidades implementadas ###
