@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xml:lang="en"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Lista de Tarefas</title>
+</h:head>
+<f:view>
+      <h:body>
+        <h:form id="formTarefas" prependId="false">
+            <h:commandLink action="#{tarefaMB.listarTodas()}" value="Recarregar a listagem!" >
+                <p:graphicImage name="/images/refresh.png" alt="Recarregar listagem!" width="24"/>
+            </h:commandLink>
+            <p:growl id="mensagens" showDetail="true" autoUpdate="true" closable="true">
+                <p:autoUpdate/>
+            </p:growl>
+            <p:dataTable id="tabelaTarefa" var="item" value="#{tarefaMB.tarefas}" prependId="false"
+                         paginator="true" rows="25" emptyMessage="Não há tarefas cadastrados."
+                         rowKey="#{item.id}" selectionMode="single"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}
+                         {RowsPerPageDropdown} {Exporters}"
+                         selection="#{tarefaMB.tarefa}"
+                         rowsPerPageTemplate="10,15,25,50,100">
+
+                <f:facet name="header"><p:outputLabel value="Lista de Tarefas: #{tarefaMB.tamanhoDaLista}"/> </f:facet>
+                <p:column headerText="ID" style="width: 6%;" sortBy="#{item.id}"
+                          filterMatchMode="contains"
+                          filterBy="#{item.id}">
+                    <h:outputText id="outputMatricula"
+                                  value="#{item.id}"/>
+                </p:column>
+                <p:column headerText="Título" style="width: 25%;" sortBy="#{item.titulo}"
+                          filterMatchMode="contains"
+                          filterBy="#{item.titulo}">
+                    <h:outputText id="outputNome"
+                                  value="#{item.titulo}"/>
+                </p:column>
+                <p:column headerText="Responsável" style="width: 10%;" sortBy="#{item.responsavel}" filterBy="#{item.responsavel}">
+                    <h:outputText value="#{item.responsavel}"/>
+                </p:column>
+                <p:column headerText="Prioridade" style="width: 10%;" sortBy="#{item.prioridade}"
+                          filterBy="#{item.prioridade}">
+                    <h:outputText value="#{item.prioridade}"/>
+                </p:column>
+                <p:column headerText="Deadline" style="width: 15%;" sortBy="#{item.deadline}"
+                          filterBy="#{item.deadline}">
+                    <h:outputText value="#{item.deadline}"/>
+                </p:column>
+                <p:column headerText="Situação" style="width: 15%;" sortBy="#{item.situacao}"
+                          filterBy="#{item.situacao}">
+                    <h:outputText value="#{item.situacao}"/>
+                </p:column>
+                <p:column style="width:10%;text-align: center" headerText="Acoes" exportable="false">
+                    <p:commandButton update=":formTarefas:tarefaDetail" oncomplete="PF('itemDialog').show()"
+                                     icon="ui-icon-search"
+                                     title="Detalhe">
+                        <f:setPropertyActionListener value="#{item}" target="#{tarefaMB.tarefa}"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+            <p:dialog header="Detalhes do Tarefa" widgetVar="itemDialog" modal="true" showEffect="fade" hideEffect="fade"
+                      resizable="false">
+                <p:outputPanel id="tarefaDetail" style="text-align:center;">
+                    <p:panelGrid columns="2" rendered="#{not empty tarefaMB.tarefa}" columnClasses="label,value">
+                        <f:facet name="header">
+                            <h:outputLabel>Tarefa</h:outputLabel>
+                        </f:facet>
+
+                        <h:outputText value="Id"/>
+                        <h:inputText value="#{tarefaMB.tarefa.id}" disabled="#{true}"/>
+
+                        <h:outputText value="Título"/>
+                        <h:inputText value="#{tarefaMB.tarefa.titulo}" disabled="false"/>
+
+                        <h:outputText value="Descricao"/>
+                        <h:inputText value="#{tarefaMB.tarefa.descricao}" disabled="false"/>
+
+                        <h:outputText value="Responsável"/>
+                        <h:inputText value="#{tarefaMB.tarefa.responsavel}" disabled="false"/>
+
+                        <h:outputText value="Deadline"/>
+                        <h:outputText value="#{tarefaMB.tarefa.deadline}" disabled="false"/>
+
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" columnClasses="label,value">
+                        <p:button id="btnFechar" value="Fechar" icon="ui-icon-plusthick"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </h:body>
+</f:view>
+</html>
