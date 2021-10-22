@@ -20,6 +20,7 @@
             <p:growl id="mensagens" showDetail="true" autoUpdate="true" closable="true">
                 <p:autoUpdate/>
             </p:growl>
+
             <p:dataTable id="tabelaTarefa" var="item" value="#{tarefaMB.tarefas}" prependId="false"
                          paginator="true" rows="25" emptyMessage="Não há tarefas cadastrados."
                          rowKey="#{item.id}" selectionMode="single"
@@ -90,7 +91,11 @@
                     </p:panelGrid>
                     <p:panelGrid columns="2" columnClasses="label,value">
                         <p:button id="btnFechar" value="Fechar" icon="ui-icon-plusthick"/>
+                        <h:commandLink action="#{tarefaMB.deletar(tarefaMB.tarefa.id)}" value="Deletar" />
+
                     </p:panelGrid>
+
+
                 </p:outputPanel>
             </p:dialog>
         </h:form>
