@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,22 +43,47 @@ public class TarefaMB {
         return tarefas;
     }
 
-    //@PutMapping
-    @RequestMapping(method = RequestMethod.PUT)
-    @ResponseBody
-    public void alterar(@RequestBody Tarefa tarefa){
-        tarefaRepository.save(tarefa);
-    }
-
-  @DeleteMapping
-    public void deletar(@PathVariable Long id){
-        tarefaRepository.deleteById(id);
-    }
-
-
     public Integer getTamanhoDaLista() {
         return tarefas.size();
     }
+
+    @PutMapping
+    public void concluir(@RequestBody Tarefa tarefa){
+        tarefa.setSituacao("Concluida");
+        tarefaRepository.save(tarefa);
+    }
+
+/*
+    @DeleteMapping
+    public void deletar(@PathVariable Long id){
+        tarefaRepository.deleteById(id);
+    }
+*/
+
+    @DeleteMapping
+    public void deletar(@RequestBody Tarefa tarefa){
+        tarefaRepository.delete(tarefa);
+    }
+
+
+    @PostMapping
+    public void incluir(@RequestBody Tarefa tarefa){
+        tarefa.setId(1L);
+        tarefaRepository.save(tarefa);
+        tarefa = new Tarefa();
+        tarefas = tarefaRepository.findAll();
+    }
+
+    @PostMapping
+    public void alterar(@RequestBody Tarefa tarefa){
+            tarefaRepository.save(tarefa);
+            tarefa = new Tarefa();
+    }
+
+    public void novo() {
+        tarefa = new Tarefa();
+    }
+
 
 }
 

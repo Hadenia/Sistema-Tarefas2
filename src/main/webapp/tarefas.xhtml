@@ -12,22 +12,31 @@
     <title>Lista de Tarefas</title>
 </h:head>
 <f:view>
-      <h:body>
+    <h:body>
         <h:form id="formTarefas" prependId="false">
-            <h:commandLink action="#{tarefaMB.listarTodas()}" value="Recarregar a listagem!" >
-                <p:graphicImage name="/images/refresh.png" alt="Recarregar listagem!" width="24"/>
-            </h:commandLink>
-            <p:growl id="mensagens" showDetail="true" autoUpdate="true" closable="true">
-                <p:autoUpdate/>
-            </p:growl>
+
+            <p:commandButton update="tabelaTarefa"
+                             title="Recarregar Lista"
+                             action="#{tarefaMB.listarTodas()}"
+                             value="Recarregar a listagem">
+            </p:commandButton>
+
+            <h:form id="formAdd" prependId="false">
+                <p:commandButton value="Adicionar Tarefa"
+                                 action="#{tarefaMB.novo()}"
+                                 update="checkForm"
+                                 style="left: 60%"
+                                 oncomplete="PF('checkDialog').show()"
+                                 resetValues="true" >
+                </p:commandButton>
+            </h:form>
 
             <p:dataTable id="tabelaTarefa" var="item" value="#{tarefaMB.tarefas}" prependId="false"
                          paginator="true" rows="25" emptyMessage="Não há tarefas cadastrados."
                          rowKey="#{item.id}" selectionMode="single"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}
-                         {RowsPerPageDropdown} {Exporters}"
-                         selection="#{tarefaMB.tarefa}"
-                         rowsPerPageTemplate="10,15,25,50,100">
+                         {RowsPerPageDropdown}"
+                         selection="#{tarefaMB.tarefa}">
 
                 <f:facet name="header"><p:outputLabel value="Lista de Tarefas: #{tarefaMB.tamanhoDaLista}"/> </f:facet>
                 <p:column headerText="ID" style="width: 6%;" sortBy="#{item.id}"
@@ -36,7 +45,7 @@
                     <h:outputText id="outputMatricula"
                                   value="#{item.id}"/>
                 </p:column>
-                <p:column headerText="Título" style="width: 25%;" sortBy="#{item.titulo}"
+                <p:column headerText="Título" style="width: 15%;" sortBy="#{item.titulo}"
                           filterMatchMode="contains"
                           filterBy="#{item.titulo}">
                     <h:outputText id="outputNome"
@@ -57,15 +66,28 @@
                           filterBy="#{item.situacao}">
                     <h:outputText value="#{item.situacao}"/>
                 </p:column>
-                <p:column style="width:10%;text-align: center" headerText="Acoes" exportable="false">
+                <p:column style="width:10%;" headerText="Ações" exportable="false">
                     <p:commandButton update=":formTarefas:tarefaDetail" oncomplete="PF('itemDialog').show()"
-                                     icon="ui-icon-search"
-                                     title="Detalhe">
+                                     icon="ui-icon-pencil"
+                                     title="Editar">
+                        <f:setPropertyActionListener value="#{item}" target="#{tarefaMB.tarefa}"/>
+                    </p:commandButton>
+                    <p:commandButton update=":formTarefas:tarefaDetail"
+                                     icon="ui-icon-minusthick"
+                                     title="Deletar"
+                                     action="#{tarefaMB.deletar(tarefaMB.tarefa)}">
+                        <f:setPropertyActionListener value="#{item}" target="#{tarefaMB.tarefa}"/>
+                    </p:commandButton>
+                    <p:commandButton update=":formTarefas:tarefaDetail"
+                                     icon="ui-icon-check"
+                                     title="Concluir"
+                                     action="#{tarefaMB.concluir(tarefaMB.tarefa)}">
                         <f:setPropertyActionListener value="#{item}" target="#{tarefaMB.tarefa}"/>
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
-            <p:dialog header="Detalhes do Tarefa" widgetVar="itemDialog" modal="true" showEffect="fade" hideEffect="fade"
+
+            <p:dialog header="Editar Tarefa" widgetVar="itemDialog" modal="true" showEffect="fade" hideEffect="fade"
                       resizable="false">
                 <p:outputPanel id="tarefaDetail" style="text-align:center;">
                     <p:panelGrid columns="2" rendered="#{not empty tarefaMB.tarefa}" columnClasses="label,value">
@@ -85,20 +107,54 @@
                         <h:outputText value="Responsável"/>
                         <h:inputText value="#{tarefaMB.tarefa.responsavel}" disabled="false"/>
 
+                        <h:outputText value="Situação"/>
+                        <h:inputText value="#{tarefaMB.tarefa.situacao}" disabled="false" />
+
+                        <h:outputText value="Prioridade"/>
+                        <h:inputText value="#{tarefaMB.tarefa.prioridade}" disabled="false"/>
+
                         <h:outputText value="Deadline"/>
-                        <h:outputText value="#{tarefaMB.tarefa.deadline}" disabled="false"/>
+                        <h:inputText value="#{tarefaMB.tarefa.deadline}" disabled="false"/>
 
                     </p:panelGrid>
                     <p:panelGrid columns="2" columnClasses="label,value">
-                        <p:button id="btnFechar" value="Fechar" icon="ui-icon-plusthick"/>
-                        <h:commandLink action="#{tarefaMB.deletar(tarefaMB.tarefa.id)}" value="Deletar" />
+
+                       <p:commandButton id="btnSalvar" value="Salvar" action="#{tarefaMB.alterar(tarefaMB.tarefa)}"
+                        update="formTarefas:tarefaDetail"
+                        icon=" ui-icon-check"/>
 
                     </p:panelGrid>
-
-
                 </p:outputPanel>
             </p:dialog>
+
+
+            <p:dialog widgetVar="checkDialog" closeOnEscape="true" modal="true" header="Nova Tarefa">
+                <h:form id="checkForm">
+                    <p:panelGrid columns="2">
+                        <h:outputText value="Título"/>
+                        <p:inputText value="#{tarefaMB.tarefa.titulo}"/>
+
+                        <h:outputText value="Descrição"/>
+                        <p:inputText value="#{tarefaMB.tarefa.descricao}"/>
+
+                        <h:outputText value="Responsável"/>
+                        <p:inputText value="#{tarefaMB.tarefa.responsavel}"/>
+
+                        <h:outputText value="Prioridade"/>
+                        <p:inputText value="#{tarefaMB.tarefa.prioridade}" />
+
+                        <h:outputText value="DeadLine"/>
+                        <p:inputText value="#{tarefaMB.tarefa.deadline}" />
+                    </p:panelGrid>
+
+                    <p:commandButton value="Cadastrar" action="#{tarefaMB.incluir(tarefaMB.tarefa)}"
+                                     update="checkForm"
+                                     icon=" ui-icon-check"/>
+                </h:form>
+            </p:dialog>
+
         </h:form>
+
     </h:body>
 </f:view>
 </html>
