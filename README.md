@@ -35,5 +35,5 @@ Para a criação do projeto foi utilizado as seguintes tecnologias:
 
 ### Funcionalidades implementadas ###
 - Criação da entity Tarefa e adicionados as anotações JPA.
-- Criação da página JSF do qual contem a listagem de tarefas e filtro.
+- Criação da página JSF do qual contem a listagem de tarefas, filtros e operações: Cadastrar, editar e deletar, sendo somente a ultima que está funcionando.
 - GET, POST, DELETE, PUT no banco de dados funcionando, testados através do Postman.
